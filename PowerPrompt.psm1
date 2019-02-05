@@ -1,5 +1,5 @@
 $script:defaultPrompt="PanelPrompt"
-$script:disabled=0
+$script:isOff=0
 <#
  .Synopsis
   Pimp your PowerShell prompt!
@@ -13,15 +13,15 @@ $script:disabled=0
   Persist the prompt across sessions. Setting the name parameter without this will
   only change the prompt for the duration of the session.
 
- .Parameter disable
+ .Parameter off
 
   Disable PowerPrompt, i.e. use the standard PS> prompt. Lasts for the duration
   of the session only. (Comment out the prompt function in your powershell profile
   to disable it permanently.)
 
- .Parameter enable
+ .Parameter on
 
-  Re-enable PowerPrompt if you have disabled it using -disable.
+  Re-enable PowerPrompt if you have disabled it using -off.
 
  .Example
   PowerPrompt MultilineArrowPrompt
@@ -32,11 +32,11 @@ $script:disabled=0
   (Changes the prompt and persists it across sessions)
 
  .Example
-  PowerPrompt -disable
+  PowerPrompt -off
   (Temporarily disables PowerPrompt)
 
 .Example
-  PowerPrompt -enable
+  PowerPrompt -on
  (Re-enables it)
 #>
 function PowerPrompt {
@@ -44,20 +44,20 @@ function PowerPrompt {
     param(
         [string]$name,
         [switch]$persist,
-        [switch]$disable,
-        [switch]$enable
+        [switch]$off,
+        [switch]$on
     )
 
     # Any error causes the standard powershell prompt to display
-    if ($disable) {
-        $script:disabled=1
+    if ($off) {
+        $script:isOff=1
         return
     }
-    if ($enable) {
-        $script:disabled=0
+    if ($on) {
+        $script:isOff=0
         return
     }
-    if ($disabled) {
+    if ($isOff) {
         return
     }
 
