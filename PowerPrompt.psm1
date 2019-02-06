@@ -45,7 +45,8 @@ function PowerPrompt {
         [string]$name,
         [switch]$persist,
         [switch]$off,
-        [switch]$on
+        [switch]$on,
+        [switch]$show
     )
 
     if ($off) {
@@ -57,6 +58,11 @@ function PowerPrompt {
         return
     }
     if ($isOff) {
+        return
+    }
+
+    if ($show) {
+        $env:PowerPromptShow=1
         return
     }
 

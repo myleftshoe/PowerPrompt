@@ -96,8 +96,7 @@ function PanelPrompt {
     $pwdParentPath = $pwdItem.parent.fullname
     $pwdLeaf = $pwdItem.name
 
-
-    if (stateChanged) {
+    if ((stateChanged) -or $env:PowerPromptShow) {
 
         if ("$dynamicPromptColor" -eq "on") {
             $script:primary = Get-NextColor
@@ -181,6 +180,8 @@ function PanelPrompt {
 
     saveState
     setWindowTitle
+
+    Remove-Item env:PowerPromptShow
 
     Return "  "
 
