@@ -48,7 +48,6 @@ function PowerPrompt {
         [switch]$on
     )
 
-    # Any error causes the standard powershell prompt to display
     if ($off) {
         $script:isOff=1
         return
