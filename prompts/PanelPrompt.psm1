@@ -1,4 +1,5 @@
 #Author: psammut
+using module ..\components\Git.psm1
 
 $script:_showprompt=""
 # $script:foregroundColor = 'White'
@@ -6,6 +7,7 @@ $script:primary = "Blue"
 $script:tint = "DarkBlue"
 $script:dynamicPromptColor="on"
 $script:colorIndex=0;
+
 
 function showprompt() {
     $script:_showprompt="on"
@@ -131,39 +133,23 @@ function PanelPrompt {
 
     # $currentDrive = (Get-Location).Drive
     # $currentDriveLabel = (Get-Volume $currentDrive.Name).FileSystemLabel
+    write-host $isGit
 
+    $isGit=[Git]::isGit
+    # get all git info before any write-host to prevent delay when prompt displayed
+    if ($isGit) {
 
-    $is_git = git rev-parse --is-inside-work-tree
-    if ($is_git) {
+        $git=[Git]::new()
 
-        $gitBranch = "(none)";
-        $gitBranch = $(git symbolic-ref --short HEAD)
+        $gitBranch = $git.branch
+        $gitRepoPath = $git.repoPath
+        $gitRepoLeaf = $git.repoLeaf
+        $gitRemoteName = $git.remoteName
+        $gitCommitCount = $git.commitCount
+        $gitStagedCount = $git.stagedCount
+        $gitUnstagedCount = $git.unstagedCount
+        $gitRemoteCommitDiffCount = $git.remoteCommitDiffCount
 
-        $gitCommitCount = 0;
-        $gitCommitCount=$(git rev-list --all --count)
-
-        $gitStagedCount = 0
-        $gitUnstagedCount = 0
-        git status --porcelain | ForEach-Object {
-            if ($_.substring(0, 1) -ne " ") {
-                $gitStagedCount += 1
-            }
-            if ($_.substring(1, 1) -ne " ") {
-                $gitUnstagedCount += 1
-            }
-        }
-
-        $gitRemoteCommitDiffCount = $(git rev-list HEAD...origin/master --count)
-
-        $gitRepoPath = $(git rev-parse --show-toplevel).replace("/", "\")
-        $gitRepoLeaf = Split-Path (git rev-parse --show-toplevel) -Leaf
-
-        # $gitRemoteName = $(basename (git remote get-url origin)).replace(".git", "")
-        $gitRemoteName = ""
-        Try {
-            $gitRemoteName = $(Split-Path -Leaf (git remote get-url origin)).replace(".git", "")
-        }
-        Catch {}
     }
 
     # Write-Host "—" -foregroundColor "DarkGray"
@@ -217,8 +203,8 @@ function PanelPrompt {
         }
         WriteLinePadded ($Icon + $Text)
 
-        if ($is_git) {
-            # Write-Host
+        if ($isGit) {
+
             # Write-Host "█" -foregroundColor "$primary" -NoNewLine
             if ("$pwdPath" -ne "$gitRepoPath") {
                 $Icon = $bg.$primary + $fg.$primaryTextColor +  "  $gitLogo  "
