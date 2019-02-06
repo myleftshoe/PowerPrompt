@@ -133,10 +133,10 @@ function PanelPrompt {
 
     # $currentDrive = (Get-Location).Drive
     # $currentDriveLabel = (Get-Volume $currentDrive.Name).FileSystemLabel
-    write-host $isGit
 
-    $isGit=[Git]::isGit
+    # $isGit=[Git]::isGit
     # get all git info before any write-host to prevent delay when prompt displayed
+    [bool]$isGit = $(git rev-parse --is-inside-work-tree)
     if ($isGit) {
 
         $git=[Git]::new()

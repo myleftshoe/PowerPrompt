@@ -1,4 +1,5 @@
 #Author: psammut
+using module ..\components\Git.psm1
 
 # $script:foregroundColor = 'White'
 $script:promptColor = 'Yellow'
@@ -25,8 +26,6 @@ function MultilineArrowPrompt {
     # Prompt Colors
     # Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow
     # Gray DarkGray Blue Green Cyan Red Magenta Yellow White
-
-    $is_git = git rev-parse --is-inside-work-tree
 
     if ("$dynamicPromptColor" -eq "on") {
         $script:promptColor = Get-NextColor
@@ -67,7 +66,10 @@ function MultilineArrowPrompt {
         Write-Host " ($pwdParentPath)" -NoNewLine -foregroundColor "DarkGray"
     }
     Write-Host
-    if ($is_git) {
+
+    # $isGit=[Git]::isGit
+    [bool]$isGit = $(git rev-parse --is-inside-work-tree)
+    if ($isGit) {
         Write-Host "┃ " -foregroundColor "$promptColor"
     }
     Write-Host "┗" -foregroundColor "$promptColor" -NoNewLine
@@ -77,43 +79,25 @@ function MultilineArrowPrompt {
 
     # Line 1
 
-    Write-Host "$([char]0x1b)[u" -NoNewLine
+    # Write-Host "$([char]0x1b)[u" -NoNewLine
 
 
     # Line 2
-    if ($is_git) {
+    if ($isGit) {
 
         $gitLogo = ""
         $gitBranchIcon = ""
 
-        $git_branch = "(none)";
-        $git_branch = $(git symbolic-ref --short HEAD)
+        $git=[Git]::new()
 
-        $git_commitCount = 0;
-        $git_commitCount=$(git rev-list --all --count)
-
-        $git_stagedCount = 0
-        $git_unstagedCount = 0
-        git status --porcelain | ForEach-Object {
-            if ($_.substring(0, 1) -ne " ") {
-                $git_stagedCount += 1
-            }
-            if ($_.substring(1, 1) -ne " ") {
-                $git_unstagedCount += 1
-            }
-        }
-
-        $git_remoteCommitDiffCount = $(git rev-list HEAD...origin/master --count)
-
-        $gitRepoPath = $(git rev-parse --show-toplevel).replace("/", "\")
-        $gitRepoLeaf = Split-Path (git rev-parse --show-toplevel) -Leaf
-
-        # $gitRemoteName = $(basename (git remote get-url origin)).replace(".git", "")
-        $gitRemoteName = ""
-        Try {
-            $gitRemoteName = $(Split-Path -Leaf (git remote get-url origin)).replace(".git", "")
-        }
-        Catch {}
+        $gitBranch = $git.branch
+        $gitRepoPath = $git.repoPath
+        $gitRepoLeaf = $git.repoLeaf
+        $gitRemoteName = $git.remoteName
+        $gitCommitCount = $git.commitCount
+        $gitStagedCount = $git.stagedCount
+        $gitUnstagedCount = $git.unstagedCount
+        $gitRemoteCommitDiffCount = $git.remoteCommitDiffCount
 
         Write-Host "$([char]0x1b)[1A" -NoNewLine
 
@@ -124,22 +108,23 @@ function MultilineArrowPrompt {
         }
 
         Write-Host " $gitBranchIcon "  -NoNewLine -foregroundColor "Yellow"
-        Write-Host "$git_branch " -NoNewLine
-        if ($git_commitCount -eq 0) {
+        Write-Host "$gitBranch " -NoNewLine
+        if ($gitCommitCount -eq 0) {
             Write-Host "(no commits) " -NoNewLine -foregroundColor "DarkGray"
         }
-        Write-Host $("$git_stagedCount ") -NoNewLine -foregroundColor "Green"
-        Write-Host $("$git_unstagedCount ") -NoNewLine -foregroundColor "Red"
-        Write-Host $("$git_remoteCommitDiffCount") -NoNewLine -foregroundColor "Yellow"
+        Write-Host $("$gitStagedCount ") -NoNewLine -foregroundColor "Green"
+        Write-Host $("$gitUnstagedCount ") -NoNewLine -foregroundColor "Red"
+        Write-Host $("$gitRemoteCommitDiffCount") -NoNewLine -foregroundColor "Yellow"
         # warn if remote name != local folder name
         if ("$gitRemoteName" -and ("$gitRemoteName" -ne "$gitRepoLeaf")) {
             Write-Host " 肋" -NoNewLine -foregroundColor "Yellow"
             Write-Host "$gitRemoteName" -NoNewLine -foregroundColor "Yellow"
         }
 
-        Write-Host "$([char]0x1b)[u" -NoNewLine
         # Write-Host
     }
+
+    Write-Host "$([char]0x1b)[u" -NoNewLine
 
     $windowTitle = "$((Get-Location).Path)"
     if ($windowTitle -eq $HOME) {$windowTitle = "~"}

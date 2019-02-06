@@ -1,30 +1,21 @@
-# $git = [PSCustomObject]@{
-#     isGit                   = $(git rev-parse --is-inside-work-tree)
-#     branch                  = $(git symbolic-ref --short HEAD)
-#     repoPath                = $(git rev-list HEAD...origin/master --count)
-#     repoLeaf                = Split-Path (git rev-parse --show-toplevel) -Leaf
-#     commitCount             = $(git rev-list --all --count)
-#     stagedCount             = 0
-#     unstagedCount           = 0
-#     remoteCommitDiffCount   = 0
-
-# }
+# Author: psammut
 
 class Git {
     # properties
-    static [bool]$isGit = $(git rev-parse --is-inside-work-tree)
-    [string]$branch
-    [string]$repoPath
-    [string]$repoLeaf
-    [string]$remoteName
-    [int]$commitCount
-    [int]$stagedCount
-    [int]$unstagedCount
-    [int]$remoteCommitDiffCount
+    # powershell caches class hence isGit gets stale
+    # static [bool]$isGit = $(git rev-parse --is-inside-work-tree)
+    # [bool]$isGit = $(git rev-parse --is-inside-work-tree)
+    [string]$branch = ""
+    [string]$repoPath = ""
+    [string]$repoLeaf = ""
+    [string]$remoteName = ""
+    [int]$commitCount = 0
+    [int]$stagedCount = 0
+    [int]$unstagedCount = 0
+    [int]$remoteCommitDiffCount = 0
 
     # Default constructor
     Git(){
-		# $this.isGit                   = $(git rev-parse --is-inside-work-tree)
 		$this.branch = $(git symbolic-ref --short HEAD)
 		$this.repoPath = $(git rev-list HEAD...origin/master --count)
 		$this.repoLeaf = Split-Path (git rev-parse --show-toplevel) -Leaf
