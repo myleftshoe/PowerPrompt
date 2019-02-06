@@ -15,6 +15,7 @@ Import-Module PowerPrompt
 function Prompt() {
     PowerPrompt
 }
+```
 
 ## Screenshots
 ![Screenshot#1](https://github.com/myleftshoe/_README-Assets/blob/master/PowerPrompt/Screenshot1.png)
