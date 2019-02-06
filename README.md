@@ -19,5 +19,7 @@ function Prompt() {
 
 ## Screenshots
 ![Screenshot#1](https://github.com/myleftshoe/_README-Assets/blob/master/PowerPrompt/Screenshot1.png)
+
 ![Screenshot#2](https://github.com/myleftshoe/_README-Assets/blob/master/PowerPrompt/Screenshot2.png)
+
 ![Screenshot#3](https://github.com/myleftshoe/_README-Assets/blob/master/PowerPrompt/Screenshot3.png)
