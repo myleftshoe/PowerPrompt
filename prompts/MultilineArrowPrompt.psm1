@@ -1,5 +1,6 @@
 #Author: psammut
 using module ..\components\Git.psm1
+using module ..\components\Icons.psm1
 
 # $script:foregroundColor = 'White'
 $script:promptColor = 'Yellow'
@@ -21,6 +22,10 @@ function get-NextColor( ) {
     return $color
 }
 
+$folderIcon = [Icons]::folderIcon
+$gitLogo = [Icons]::gitLogo
+$gitBranchIcon = [Icons]::gitBranchIcon
+# $gitRemoteIcon = [Icons]::gitRemoteIcon
 
 function MultilineArrowPrompt {
     # Prompt Colors
@@ -46,7 +51,6 @@ function MultilineArrowPrompt {
 
     # Write-Host
 
-    $folderIcon = ""
     if ("$pwdPath" -eq "$home") {
         if ("$pwdPath" -eq "$_home") {
             $folderIcon = "≋"
@@ -84,9 +88,6 @@ function MultilineArrowPrompt {
 
     # Line 2
     if ($isGit) {
-
-        $gitLogo = ""
-        $gitBranchIcon = ""
 
         $git=[Git]::new()
 

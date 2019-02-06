@@ -1,5 +1,7 @@
 #Author: psammut
 using module ..\components\Git.psm1
+using module ..\components\Colors.psm1
+using module ..\components\Icons.psm1
 
 $script:_showprompt=""
 # $script:foregroundColor = 'White'
@@ -42,58 +44,14 @@ $promptState.gitUnstagedCount = ""
 $promptState.gitRemoteCommitDiffCount = ""
 
 
-$folderIcon = ""
-$gitLogo = ""
-$gitBranchIcon = ""
-$gitRemoteIcon = "肋"
+$folderIcon = [Icons]::folderIcon
+$gitLogo = [Icons]::gitLogo
+$gitBranchIcon = [Icons]::gitBranchIcon
+$gitRemoteIcon = [Icons]::gitRemoteIcon
 
-# Prompt Colors
-# Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow
-# Gray DarkGray Blue Green Cyan Red Magenta Yellow White
 
-$esc="$([char]0x1b)"
-# Control character sequences
-$fg = [ordered]@{
-    "Black"         = "$esc[30m";
-    "DarkBlue"      = "$esc[34m";
-    "DarkGreen"     = "$esc[32m";
-    "DarkCyan"      = "$esc[36m";
-    "DarkRed"       = "$esc[31m";
-    "DarkMagenta"   = "$esc[35m";
-    "DarkYellow"    = "$esc[33m";
-    "Gray"          = "$esc[37m";
-    # "Extended"      = "$esc[38m";
-    # "Default"       = "$esc[39m";
-    "DarkGray"      = "$esc[90m";
-    "Blue"          = "$esc[94m";
-    "Green"         = "$esc[92m";
-    "Cyan"          = "$esc[96m";
-    "Red"           = "$esc[91m";
-    "Magenta"       = "$esc[95m";
-    "Yellow"        = "$esc[93m";
-    "White"         = "$esc[97m";
-}
-$bg = [ordered]@{
-    "Black"         = "$esc[40m";
-    "DarkBlue"      = "$esc[44m";
-    "DarkGreen"     = "$esc[42m";
-    "DarkCyan"      = "$esc[46m";
-    "DarkRed"       = "$esc[41m";
-    "DarkMagenta"   = "$esc[45m";
-    "DarkYellow"    = "$esc[43m";
-    "Gray"          = "$esc[47m";
-    # "Extended"      = "$esc[38m";
-    # "Default"       = "$esc[39m";
-    "DarkGray"      = "$esc[100m";
-    "Blue"          = "$esc[104m";
-    "Green"         = "$esc[102m";
-    "Cyan"          = "$esc[106m";
-    "Red"           = "$esc[101m";
-    "Magenta"       = "$esc[105m";
-    "Yellow"        = "$esc[103m";
-    "White"         = "$esc[107m";
-}
-
+$fg=[Colors]::fg
+$bg=[Colors]::bg
 # $palette = @("Blue", "Green",  "Cyan", "Red", "Magenta", "Yellow", "Gray")
 $palette = @("DarkBlue", "DarkGreen",  "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "DarkGray")
 
