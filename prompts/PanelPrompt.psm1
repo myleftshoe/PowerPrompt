@@ -3,17 +3,28 @@ using module ..\components\Git.psm1
 using module ..\components\Colors.psm1
 using module ..\components\Icons.psm1
 
-$script:_showprompt=""
-# $script:foregroundColor = 'White'
+$fg=[Colors]::fg
+$bg=[Colors]::bg
+
+# $palette = @("Blue", "Green",  "Cyan", "Red", "Magenta", "Yellow", "Gray")
+$palette = @("DarkBlue", "DarkGreen",  "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "DarkGray")
+
 $script:primary = "Blue"
 $script:tint = "DarkBlue"
 $script:dynamicPromptColor="on"
 $script:colorIndex=0;
 
+$folderIcon = [Icons]::folderIcon
+$gitLogo = [Icons]::gitLogo
+$gitBranchIcon = [Icons]::gitBranchIcon
+$gitRemoteIcon = [Icons]::gitRemoteIcon
 
-function showprompt() {
-    $script:_showprompt="on"
-}
+$promptState = @{}
+$promptState.pwd = ""
+$promptState.gitStagedCount = ""
+$promptState.gitUnstagedCount = ""
+$promptState.gitRemoteCommitDiffCount = ""
+
 
 function get-NextColor( ) {
 
@@ -28,32 +39,6 @@ function get-NextColor( ) {
     return $color
 }
 
-function Show-Colors( ) {
-    $colors = [Enum]::GetValues( [ConsoleColor] )
-    $max = ($colors | ForEach-Object { "$_ ".Length } | Measure-Object -Maximum).Maximum
-    foreach ( $color in $colors ) {
-        Write-Host (" {0,2} {1,$max} " -f [int]$color, $color) -NoNewline
-        Write-Host "  " -Background $color
-    }
-}
-
-$promptState = @{}
-$promptState.pwd = ""
-$promptState.gitStagedCount = ""
-$promptState.gitUnstagedCount = ""
-$promptState.gitRemoteCommitDiffCount = ""
-
-
-$folderIcon = [Icons]::folderIcon
-$gitLogo = [Icons]::gitLogo
-$gitBranchIcon = [Icons]::gitBranchIcon
-$gitRemoteIcon = [Icons]::gitRemoteIcon
-
-
-$fg=[Colors]::fg
-$bg=[Colors]::bg
-# $palette = @("Blue", "Green",  "Cyan", "Red", "Magenta", "Yellow", "Gray")
-$palette = @("DarkBlue", "DarkGreen",  "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "DarkGray")
 
 function WriteLinePadded ($text) {
     [Console]::Write($text)
@@ -65,8 +50,8 @@ function WriteLinePadded ($text) {
 function PanelPrompt {
 
     function stateChanged {
-        return ($_showprompt) -or
-            (($promptState.pwd -ne $pwdPath) -or `
+        return ( `
+            ($promptState.pwd -ne $pwdPath) -or `
             ($gitRepoPath -ne $promptState.gitRepoPath) -or `
             ($gitStagedCount -ne $promptState.gitStagedCount) -or `
             ($gitUnstagedCount -ne $promptState.gitUnstagedCount) -or `
@@ -88,10 +73,6 @@ function PanelPrompt {
         $host.UI.RawUI.WindowTitle = "$windowTitle"
     }
 
-
-    # $currentDrive = (Get-Location).Drive
-    # $currentDriveLabel = (Get-Volume $currentDrive.Name).FileSystemLabel
-
     # $isGit=[Git]::isGit
     # get all git info before any write-host to prevent delay when prompt displayed
     [bool]$isGit = $(git rev-parse --is-inside-work-tree)
@@ -110,8 +91,6 @@ function PanelPrompt {
 
     }
 
-    # Write-Host "—" -foregroundColor "DarkGray"
-    # $drive = (PWD).Drive.Name
     $pwdItem = (Get-Item (Get-Location))
     $pwdPath = $pwdItem.fullname
     $pwdParentPath = $pwdItem.parent.fullname
@@ -146,10 +125,7 @@ function PanelPrompt {
         elseif ("$pwdPath" -eq "$_home") {
             $folderIcon = "≈"
         }
-        # [Console]::Write("$([char]0x1b)[44m")
-        # Write-Host -NoNewLine "    ▕" -foregroundColor "Black" -backgroundColor "$primary"
 
-        # [Console]::Write($bg.Red)
         $Icon = $bg.$primary +  "     "
         $Text = $bg.$tint
         WriteLinePadded ($Icon + $Text)
@@ -163,7 +139,6 @@ function PanelPrompt {
 
         if ($isGit) {
 
-            # Write-Host "█" -foregroundColor "$primary" -NoNewLine
             if ("$pwdPath" -ne "$gitRepoPath") {
                 $Icon = $bg.$primary + $fg.$primaryTextColor +  "  $gitLogo  "
                 $Text = $bg.$tint + $fg.$secondaryTextColor + "  $gitRepoLeaf"
@@ -206,7 +181,6 @@ function PanelPrompt {
 
     saveState
     setWindowTitle
-    $script:_showprompt=""
 
     Return "  "
 

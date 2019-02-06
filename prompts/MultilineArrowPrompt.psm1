@@ -7,6 +7,11 @@ $script:promptColor = 'Yellow'
 $script:dynamicPromptColor="on"
 $script:colorIndex=0;
 
+$folderIcon = [Icons]::folderIcon
+$gitLogo = [Icons]::gitLogo
+$gitBranchIcon = [Icons]::gitBranchIcon
+$gitRemoteIcon = [Icons]::gitRemoteIcon
+
 function get-NextColor( ) {
     $colors = [Enum]::GetValues( [ConsoleColor] )
     $max = $colors.length - 1
@@ -22,15 +27,7 @@ function get-NextColor( ) {
     return $color
 }
 
-$folderIcon = [Icons]::folderIcon
-$gitLogo = [Icons]::gitLogo
-$gitBranchIcon = [Icons]::gitBranchIcon
-# $gitRemoteIcon = [Icons]::gitRemoteIcon
-
 function MultilineArrowPrompt {
-    # Prompt Colors
-    # Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow
-    # Gray DarkGray Blue Green Cyan Red Magenta Yellow White
 
     if ("$dynamicPromptColor" -eq "on") {
         $script:promptColor = Get-NextColor
@@ -39,17 +36,10 @@ function MultilineArrowPrompt {
     $currentDrive = (Get-Location).Drive
     $currentDriveLabel = (Get-Volume $currentDrive.Name).FileSystemLabel
 
-    # Write-Host
-
-
-    # Write-Host "—" -foregroundColor "DarkGray"
-    # $drive = (PWD).Drive.Name
     $pwdItem = (Get-Item (Get-Location))
     $pwdPath = $pwdItem.fullname
     $pwdParentPath = $pwdItem.parent.fullname
     $pwdLeaf = $pwdItem.name
-
-    # Write-Host
 
     if ("$pwdPath" -eq "$home") {
         if ("$pwdPath" -eq "$_home") {
@@ -79,12 +69,6 @@ function MultilineArrowPrompt {
     Write-Host "┗" -foregroundColor "$promptColor" -NoNewLine
 
     Write-Host "$([char]0x1b)[s" -NoNewLine
-    # Write-Host "$([char]0x1b)[2A" -NoNewLine
-
-    # Line 1
-
-    # Write-Host "$([char]0x1b)[u" -NoNewLine
-
 
     # Line 2
     if ($isGit) {
@@ -103,7 +87,7 @@ function MultilineArrowPrompt {
         Write-Host "$([char]0x1b)[1A" -NoNewLine
 
         if ("$pwdPath" -ne "$gitRepoPath") {
-            # $childPath="$pwdPath".replace("$gitRepoPath", "")
+
             Write-Host " $gitLogo " -NoNewLine -foregroundColor "Yellow"
             Write-Host "$gitRepoLeaf" -NoNewLine
         }
@@ -118,11 +102,10 @@ function MultilineArrowPrompt {
         Write-Host $("$gitRemoteCommitDiffCount") -NoNewLine -foregroundColor "Yellow"
         # warn if remote name != local folder name
         if ("$gitRemoteName" -and ("$gitRemoteName" -ne "$gitRepoLeaf")) {
-            Write-Host " 肋" -NoNewLine -foregroundColor "Yellow"
+            Write-Host " $gitRemoteIcon" -NoNewLine -foregroundColor "Yellow"
             Write-Host "$gitRemoteName" -NoNewLine -foregroundColor "Yellow"
         }
 
-        # Write-Host
     }
 
     Write-Host "$([char]0x1b)[u" -NoNewLine
