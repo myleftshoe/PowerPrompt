@@ -4,6 +4,9 @@ using module ..\components\Colors.psm1
 using module ..\components\Icons.psm1
 
 $fg=[Colors]::fg
+$iconColor=$fg.White
+$textColor=$fg.DarkGray
+
 
 function MinimalGitPrompt {
 
@@ -13,6 +16,8 @@ function MinimalGitPrompt {
         $host.UI.RawUI.WindowTitle = "$windowTitle"
     }
 
+    $pwdLeaf = (Get-Item (Get-Location)).name
+
     [Console]::Write(" ");
 
     [bool]$isGit = $(git rev-parse --is-inside-work-tree)
@@ -20,20 +25,24 @@ function MinimalGitPrompt {
 
         $git=[Git]::new()
 
-        [Console]::Write("$([Icons]::gitBranchIcon) $($git.branch) ");
+        [Console]::Write("$iconColor$([Icons]::gitLogo) $textColor$($git.repoLeaf) ");
+        [Console]::Write("$iconColor$([Icons]::gitBranchIcon) $textColor$($git.branch) ");
+
+        if ($pwdLeaf -ne $git.repoLeaf) {
+            [Console]::Write("$iconColor$([Icons]::folderIcon) $textColor$pwdLeaf ");
+        }
 
         if(($git.unstagedCount)) { [Console]::Write(($fg.Red + "❱")) }
-        else { [Console]::Write(($fg.Gray + "❱")) }
+        else { [Console]::Write(($iconColor + "❱")) }
         if(($git.stagedCount)) { [Console]::Write(($fg.Green + "❱")) }
-        else { [Console]::Write(($fg.Gray + "❱")) }
+        else { [Console]::Write(($iconColor + "❱")) }
         if(($git.remoteCommitDiffCount)) { [Console]::Write(($fg.Yellow + "❱")) }
-        else { [Console]::Write(($fg.Gray + "❱")) }
+        else { [Console]::Write(($iconColor + "❱")) }
 
     } else {
 
-        $folderName = (Get-Item (Get-Location)).name
-        [Console]::Write("$([Icons]::folderIcon) $folderName ");
-        [Console]::Write(($fg.Gray + "❱❱❱"))
+        [Console]::Write("$([Icons]::folderIcon) $pwdLeaf ");
+        [Console]::Write(($iconColor + "❱❱❱"))
 
     }
 
