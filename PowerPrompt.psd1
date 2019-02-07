@@ -5,9 +5,11 @@
     NestedModules = @(
       '.\components\timer.psm1'
       '.\prompts\PanelPrompt.psm1'
-      '.\prompts\BracketedPrompt.psm1'
+      '.\prompts\MultilineBracketedPrompt.psm1'
       '.\prompts\MinimalGitPrompt.psm1'
+      '.\prompts\MultilineSimplePrompt.psm1'
       '.\prompts\MultilineArrowPrompt.psm1'
+      '.\prompts\MultilineBracketedPrompt.psm1'
       '.\prompts\PowerlineStylePrompt.psm1'
     )
     FunctionsToExport = @('*')

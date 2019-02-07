@@ -41,14 +41,14 @@ function get-NextColor( ) {
 
 
 function WriteLine ($text) {
-    [Console]::Write($fg.$primary +  " ┃ ")
-    [Console]::Write($text)
-    [Console]::Write(" $([char]0x1b)[400@")
-    [Console]::WriteLine("$([char]0x1b)[0m")
+    # [Console]::Write(" ")
+    [Console]::WriteLine($text)
+    # [Console]::Write(" $([char]0x1b)[400@")
+    # [Console]::WriteLine("$([char]0x1b)[0m")
 }
 
 
-function BracketedPrompt {
+function MultilineSimplePrompt {
 
     function stateChanged {
         return ( `
@@ -117,10 +117,9 @@ function BracketedPrompt {
             $folderIcon = "≈"
         }
 
-        [console]::WriteLine($fg.$primary +  " ┏")
-
-        $Icon = $fg.$primaryTextColor + " $folderIcon"
-        $Text = $fg.$primaryTextColor + "  $pwdLeaf"
+        WriteLine($bg.$primary + "   " + $bg.Default)
+        $Icon = $fg.$primaryTextColor + $bg.$primary + " $folderIcon "
+        $Text = $fg.$primaryTextColor + $bg.Default + " $pwdLeaf"
         if ("$pwdLeaf" -ne "$pwdPath") {
             $Text = $Text + $fg.$tintTextColor + " in $pwdParentPath"
         }
@@ -129,12 +128,12 @@ function BracketedPrompt {
         if ($isGit) {
 
             if ("$pwdPath" -ne "$gitRepoPath") {
-                $Icon = $fg.$primaryTextColor +  " $gitLogo"
-                $Text = $fg.$primaryTextColor + "  $gitRepoLeaf"
+                $Icon = $fg.$primaryTextColor + $bg.$primary +  " $gitLogo "
+                $Text = $fg.$primaryTextColor + $bg.Default + " $gitRepoLeaf"
                 WriteLine ($Icon + $Text)
             }
-            $Icon = $fg.$primaryTextColor +  " $gitBranchIcon"
-            $Text = $fg.$primaryTextColor + "  $gitBranch"
+            $Icon = $fg.$primaryTextColor + $bg.$primary +  " $gitBranchIcon "
+            $Text = $fg.$primaryTextColor + $bg.Default + " $gitBranch"
             if ($gitCommitCount -eq 0) {
                 $Text = $Text + $fg.$tintTextColor + " (no commits)"
             }
@@ -155,15 +154,16 @@ function BracketedPrompt {
             WriteLine ($Icon + $Text)
             # warn if remote name != local folder name
             if ("$gitRemoteName" -and ("$gitRemoteName" -ne "$gitRepoLeaf")) {
-                $Icon = $fg.$primaryTextColor +  " $gitRemoteIcon"
-                $Text = $fg.$primaryTextColor + " $gitRemoteName"
+                $Icon = $fg.$primaryTextColor + $bg.$primary +  " $gitRemoteIcon"
+                $Text = $fg.$primaryTextColor + $bg.Default + " $gitRemoteName"
                 WriteLine ($Icon + $Text)
             }
         }
-        [console]::WriteLine($fg.$primary +  " ┗")
+        WriteLine($bg.$primary + "   " + $bg.Default)
+        [Console]::WriteLine()
     }
 
-    [Console]::Write(($fg.$primary + "   ❱❱❱"))
+    [Console]::Write(($fg.$primary + " "))
     # [Console]::Write(($fg.$primary + "    "))
 
     saveState
@@ -171,6 +171,6 @@ function BracketedPrompt {
 
     Remove-Item env:PowerPromptShow
 
-    Return " "
+    Return "  "
 
 }
