@@ -3,12 +3,12 @@
 function relativePathToHome{
 	$currentPath = (Get-Location).Path
 	$currentDrive = (Get-Location).Drive.Root
-	$homeDrive = ($_home).Drive.Root
+	$homeDrive = ($START).Drive.Root
 	if ($currentPath -eq $currentDrive -or $currentDrive -ne $homeDrive) {
 		$trimmedRelativePath = $currentPath
 	}
 	else {
-		Set-Location $_home
+		Set-Location $START
 		$relativePath = Resolve-Path -relative $currentPath
 		$trimmedRelativePath = $relativePath -replace '^..\\'
 	}
