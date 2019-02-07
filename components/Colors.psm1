@@ -2,8 +2,11 @@
 # Black DarkBlue DarkGreen DarkCyan DarkRed DarkMagenta DarkYellow
 # Gray DarkGray Blue Green Cyan Red Magenta Yellow White
 
-$esc="$([char]0x1b)"
 # Control character sequences
+# https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+
+$esc="$([char]0x1b)"
+
 class Colors {
 
     static $fg = [ordered]@{
@@ -15,8 +18,8 @@ class Colors {
         "DarkMagenta"   = "$esc[35m";
         "DarkYellow"    = "$esc[33m";
         "Gray"          = "$esc[37m";
-        # "Extended"      = "$esc[38m";
-        # "Default"       = "$esc[39m";
+        # "Extended"      = "$esc[38;2;$r;$g;$b m]";
+        "Default"       = "$esc[39m";
         "DarkGray"      = "$esc[90m";
         "Blue"          = "$esc[94m";
         "Green"         = "$esc[92m";
@@ -25,6 +28,7 @@ class Colors {
         "Magenta"       = "$esc[95m";
         "Yellow"        = "$esc[93m";
         "White"         = "$esc[97m";
+
     }
 
     static $bg = [ordered]@{
@@ -36,8 +40,8 @@ class Colors {
         "DarkMagenta"   = "$esc[45m";
         "DarkYellow"    = "$esc[43m";
         "Gray"          = "$esc[47m";
-        # "Extended"      = "$esc[38m";
-        # "Default"       = "$esc[39m";
+        # "Extended"      = "$esc[48;2;";
+        "Default"       = "$esc[49m";
         "DarkGray"      = "$esc[100m";
         "Blue"          = "$esc[104m";
         "Green"         = "$esc[102m";
@@ -47,5 +51,15 @@ class Colors {
         "Yellow"        = "$esc[103m";
         "White"         = "$esc[107m";
     }
+
+    static [string]fgRGB([int]$r, [int]$g, [int]$b) {
+        return "$([char]0x1b)[38;2;$r;$g;$($b)m";
+    }
+
+    static [string]bgRGB([int]$r, [int]$g, [int]$b) {
+        return "$([char]0x1b)[48;2;$r;$g;$($b)m";
+    }
+
+    static [string]$reset = "$esc[0m";
 
 }

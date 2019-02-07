@@ -6,6 +6,7 @@ using module ..\components\Icons.psm1
 $fg=[Colors]::fg
 $iconColor=$fg.White
 $textColor=$fg.DarkGray
+# $textColor=[Colors]::fgRGB(200,160,80)
 
 
 function MinimalGitPrompt {
