@@ -176,7 +176,7 @@ function PanelPrompt {
         [Console]::WriteLine()
     }
 
-    [Console]::Write(($fg.$primary + " "))
+    [Console]::Write(($fg.$primary + " ❱❱❱"))
 
     saveState
     setWindowTitle
