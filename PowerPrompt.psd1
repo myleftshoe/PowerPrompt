@@ -5,6 +5,7 @@
     NestedModules = @(
       '.\components\timer.psm1'
       '.\prompts\PanelPrompt.psm1'
+      '.\prompts\MinimalGitPrompt.psm1'
       '.\prompts\MultilineArrowPrompt.psm1'
       '.\prompts\PowerlineStylePrompt.psm1'
     )
