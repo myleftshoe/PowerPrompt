@@ -115,10 +115,10 @@ function PanelPrompt {
 
         if ("$pwdPath" -eq "$home") {
             if ("$pwdPath" -eq "$START") {
-                $folderIcon = "≋"
+                $folderIcon = "ﲋ"
             }
             else {
-                $folderIcon = "~"
+                $folderIcon = "ﰣ"
             }
         }
         elseif ("$pwdPath" -eq "$START") {
